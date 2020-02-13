@@ -153,19 +153,19 @@ void SpeciesWidget::on_ViewCopyToClipboardButton_clicked(bool checked)
 }
 
 // Tools
-void SpeciesWidget::on_ToolsCalculateBondingButton_clicked(bool checked)
-{
-	// Get displayed Species
-	Species* sp = speciesViewer()->species();
-	if (!sp) return;
-
-	// Calculate missing bonds
-	sp->addMissingBonds();
-
-	// Signal that the data shown has been modified
-	speciesViewer()->postRedisplay();
-	speciesViewer()->notifyDataModified();
-}
+// void SpeciesWidget::on_ToolsCalculateBondingButton_clicked(bool checked)
+// {
+// 	// Get displayed SpecieS
+// 	Species* sp = speciesViewer()->species();
+// 	if (!sp) return;
+// 
+// 	// Calculate missing bonds
+// 	sp->addMissingBonds();
+// 
+// 	// Signal that the data shown has been modified
+// 	speciesViewer()->postRedisplay();
+// 	speciesViewer()->notifyDataModified();
+// }
 
 void SpeciesWidget::on_ToolsMinimiseButton_clicked(bool checked)
 {

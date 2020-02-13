@@ -215,55 +215,55 @@ void SpeciesEditor::on_ToolsCalculateBondingButton_clicked(bool checked)
 	speciesViewer()->notifyDataModified();
 }
 
-void SpeciesEditor::on_ToolsMinimiseButton_clicked(bool checked)
-{
-	// Get displayed Species
-	Species* sp = speciesViewer()->species();
-	if (!sp) return;
-
-	// Apply forcefield terms now?
-	if (sp->forcefield())
-	{
-		sp->applyForcefieldTerms(*coreData_);
-	}
-
-	// Check that the Species set up is valid
-	if (!sp->checkSetUp()) return;
-
-	// Create a temporary CoreData and Dissolve
-	CoreData temporaryCoreData;
-	Dissolve temporaryDissolve(temporaryCoreData);
-	if (!temporaryDissolve.registerMasterModules()) return;
-
-	// Copy our target species to the temporary structure, and create a simple Configuration from it
-	Species* temporarySpecies = temporaryDissolve.copySpecies(sp);
-	Configuration* temporaryCfg = temporaryDissolve.addConfiguration();
-	Procedure& generator = temporaryCfg->generator();
-	generator.addRootSequenceNode(new BoxProcedureNode(Vec3<double>(1.0,1.0,1.0), Vec3<double>(90,90,90), true));
-	AddSpeciesProcedureNode* addSpeciesNode = new AddSpeciesProcedureNode(temporarySpecies, 1, 0.0001);
-	addSpeciesNode->setKeyword<bool>("Rotate", false);
-	addSpeciesNode->setEnumeration<AddSpeciesProcedureNode::PositioningType>("Positioning", AddSpeciesProcedureNode::CentralPositioning);
-	generator.addRootSequenceNode(addSpeciesNode);
-	if (!temporaryCfg->initialiseContent(temporaryDissolve.worldPool(), 15.0)) return;
-
-	// Create a Geometry Optimisation Module in a new processing layer, and set everything up
-	if (!temporaryDissolve.createModuleInLayer("GeometryOptimisation", "Processing", temporaryCfg)) return;
-	if (!temporaryDissolve.generatePairPotentials()) return;
-
-	// Run the calculation
-	if (!temporaryDissolve.prepare()) return;
-	temporaryDissolve.iterate(1);
-
-	// Copy the optimised coordinates from the temporary Configuration to the target Species
-	ListIterator<SpeciesAtom> atomIterator(sp->atoms());
-	int index = 0;
-	while (SpeciesAtom* i = atomIterator.iterate()) sp->setAtomCoordinates(i, temporaryCfg->atom(index++)->r());
-
-	// Centre the Species back at the origin
-	sp->centreAtOrigin();
-
-	// Need to update the SpeciesViewer, and signal that the data shown has been modified
-	speciesViewer()->view().showAllData();
-	speciesViewer()->postRedisplay();
-	speciesViewer()->notifyDataModified();
-}
+// void SpeciesEditor::on_ToolsMinimiseButton_clicked(bool checked)
+// {
+// 	// Get displayed Species
+// 	Species* sp = speciesViewer()->species();
+// 	if (!sp) return;
+// 
+// 	// Apply forcefield terms now?
+// 	if (sp->forcefield())
+// 	{
+// 		sp->applyForcefieldTerms(*coreData_);
+// 	}
+// 
+// 	// Check that the Species set up is valid
+// 	if (!sp->checkSetUp()) return;
+// 
+// 	// Create a temporary CoreData and Dissolve
+// 	CoreData temporaryCoreData;
+// 	Dissolve temporaryDissolve(temporaryCoreData);
+// 	if (!temporaryDissolve.registerMasterModules()) return;
+// 
+// 	// Copy our target species to the temporary structure, and create a simple Configuration from it
+// 	Species* temporarySpecies = temporaryDissolve.copySpecies(sp);
+// 	Configuration* temporaryCfg = temporaryDissolve.addConfiguration();
+// 	Procedure& generator = temporaryCfg->generator();
+// 	generator.addRootSequenceNode(new BoxProcedureNode(Vec3<double>(1.0,1.0,1.0), Vec3<double>(90,90,90), true));
+// 	AddSpeciesProcedureNode* addSpeciesNode = new AddSpeciesProcedureNode(temporarySpecies, 1, 0.0001);
+// 	addSpeciesNode->setKeyword<bool>("Rotate", false);
+// 	addSpeciesNode->setEnumeration<AddSpeciesProcedureNode::PositioningType>("Positioning", AddSpeciesProcedureNode::CentralPositioning);
+// 	generator.addRootSequenceNode(addSpeciesNode);
+// 	if (!temporaryCfg->initialiseContent(temporaryDissolve.worldPool(), 15.0)) return;
+// 
+// 	// Create a Geometry Optimisation Module in a new processing layer, and set everything up
+// 	if (!temporaryDissolve.createModuleInLayer("GeometryOptimisation", "Processing", temporaryCfg)) return;
+// 	if (!temporaryDissolve.generatePairPotentials()) return;
+// 
+// 	// Run the calculation
+// 	if (!temporaryDissolve.prepare()) return;
+// 	temporaryDissolve.iterate(1);
+// 
+// 	// Copy the optimised coordinates from the temporary Configuration to the target Species
+// 	ListIterator<SpeciesAtom> atomIterator(sp->atoms());
+// 	int index = 0;
+// 	while (SpeciesAtom* i = atomIterator.iterate()) sp->setAtomCoordinates(i, temporaryCfg->atom(index++)->r());
+// 
+// 	// Centre the Species back at the origin
+// 	sp->centreAtOrigin();
+// 
+// 	// Need to update the SpeciesViewer, and signal that the data shown has been modified
+// 	speciesViewer()->view().showAllData();
+// 	speciesViewer()->postRedisplay();
+// 	speciesViewer()->notifyDataModified();
+// }
